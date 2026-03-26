@@ -13,31 +13,43 @@ datasource db {
   provider = "postgresql"
 }
 
-
 model Profile {
   id        String   @id @db.Uuid   // auth.users.id
   email     String?  @unique
   name      String?
+
   projects  Project[]
+  manuals   Manual[]
+
   createdAt DateTime @default(now())
 }
 
 model Project {
   id        Int      @id @default(autoincrement())
+
   name      String
   content   String?
-  manuals   Manual[]
+
   authorId  String   @db.Uuid
   author    Profile  @relation(fields: [authorId], references: [id])
+
+  manuals   Manual[]
+
+  createdAt DateTime @default(now())
 }
 
-
 model Manual {
-  id         Int     @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
+
   title      String
-  summary    String?
-  published  Boolean @default(false)
-  mdxPath    String
-  author     Project    @relation(fields: [projectId], references: [id])
-  projectId   Int
+  content    Json
+  published  Boolean  @default(false)
+
+  projectId  Int
+  project    Project  @relation(fields: [projectId], references: [id])
+
+  authorId   String   @db.Uuid
+  author     Profile  @relation(fields: [authorId], references: [id])
+
+  createdAt  DateTime @default(now())
 }

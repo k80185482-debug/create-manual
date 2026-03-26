@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/contents/mdx-page/page.mdx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/contents/mdx-page/page.mdx", "src/app/(private)/manage/posts/manual/page.mdx"],
   "exclude": ["node_modules"]
 }

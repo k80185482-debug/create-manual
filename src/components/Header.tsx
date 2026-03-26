@@ -9,9 +9,12 @@ const Header = () => {
           <Link href="/">手順書作成</Link>
         </h1>
       </div>
-      <div>
+      <div className='flex'>
         <nav className='text-sm font-medium'>
-          <Link href="/procedure/new" className='bg-orange-300 px-3 py-3 rounded-md'>新規作成</Link>
+          <Link href="/manage/posts/newProject" className='bg-red-300 px-3 py-3 rounded-md'>新規案件作成</Link>
+        </nav>
+        <nav className='text-sm font-medium'>
+          <Link href="/manage/posts/create" className='bg-orange-300 px-3 py-3 rounded-md'>新規手順書作成</Link>
         </nav>
       </div>
       <div>
