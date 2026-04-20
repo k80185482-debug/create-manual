@@ -8,19 +8,35 @@ type FormData = {
   content: {
     purpose: string;
     applicableRange: string;
+
     term: {
       title: string;
       body: string;
+      image?: File[]
+      image_path?: string;
     }[];
-    materials: string;
-    precaution: { body: string; }[];
+
+    materials: {
+      body: string;
+      image?: File[];
+      image_path?: string;
+    }[];
+
+    precaution: {
+      body: string;
+      image?: File[];
+      image_path?: string;
+    }[];
+
     steps: {
       title: string;
       body: string;
+      image?: File[];
+      image_path?: string;
     }[];
   };
   published: boolean;
-}
+};
 
 export const createManual = async (Manualdata: FormData) => {
   const supabase = await createClient();
@@ -31,18 +47,82 @@ export const createManual = async (Manualdata: FormData) => {
     throw new Error("ログインしてません")
   }
 
-  const { error } = await supabase.from ("Manual").insert(
+  const { data: manual,  error } = await supabase.from ("Manual").insert(
     {
       projectId: Manualdata.Project,
       title: Manualdata.title,
-      content: Manualdata.content,
+      content: {},
       published: Manualdata.published,
       authorId: user.id
     }
   )
+  .select()
+  .single()
 
   if (error) {
     console.log(error)
-    throw new Error("保存に失敗しました");
+    throw error;
   }
+
+  const uploadImage  = async ( file?: File[] ) => {
+    if ( !file || file.length === 0 ) return null;
+    const imagePath = `${user.id}/${manual.id}/${crypto.randomUUID()}`
+    const { error: storageError } = await supabase.storage
+    .from("manualImage")
+    .upload(imagePath, file[0])
+
+    if (storageError) {
+      console.log(storageError)
+      throw storageError;
+    }
+
+    return imagePath;
+  }
+
+  const newContent = {
+    ...Manualdata.content,
+
+    term: await Promise.all(
+      Manualdata.content.term.map(async (data) => ({
+        ...data,
+        image_path: await uploadImage(data.image),
+        image: undefined,
+      }))
+    ),
+
+    materials: await Promise.all(
+      Manualdata.content.materials.map(async (data) => ({
+        ...data,
+        image_path: await uploadImage(data.image),
+        image: undefined,
+      }))
+    ),
+
+    precaution: await Promise.all(
+      Manualdata.content.precaution.map(async (data) => ({
+        ...data,
+        image_path: await uploadImage(data.image),
+        image: undefined,
+      }))
+    ),
+
+    steps: await Promise.all(
+      Manualdata.content.steps.map(async (data) => ({
+        ...data,
+        image_path: await uploadImage(data.image),
+        image: undefined,
+      }))
+    ),
+  };
+
+  const { error: updateError } = await supabase
+    .from("Manual")
+    .update({ content: newContent })
+    .eq("id", manual.id);
+
+  if (updateError) {
+    console.log(updateError);
+    throw updateError;
+
+}
 }

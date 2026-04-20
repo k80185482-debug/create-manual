@@ -25,6 +25,7 @@ export const getManualByProject = async (projectId: number) => {
       )
     `)
     .eq("projectId", projectId)
+    .eq("published", true)
     .order("createdAt", { ascending: false });
 
   if (error) {
