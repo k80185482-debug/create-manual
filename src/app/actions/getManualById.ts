@@ -2,27 +2,27 @@
 
 import { createClient } from "@/lib/supabase/server";
 
-type FormData = {
-  Project: string;
-  title: string;
-  content: {
-    purpose: string;
-    applicableRange: string;
-    term: {
-      title: string;
-      body: string;
-    }[];
-    materials: string;
-    precaution: { body: string; }[];
-    steps: {
-      title: string;
-      body: string;
-    }[];
-  };
-  published: boolean;
-}
+type ImageItem = {
+  image?: File[];
+  image_path?: string;
+  image_url?: string | null;
+};
 
-export const getManualById = async (id: number): Promise<FormData> => {
+type Content = {
+  title?: string;
+  body: string;
+} & ImageItem;
+
+type Contents = {
+  purpose: string;
+  applicableRange: string;
+  term: Content[];
+  materials: Content[];
+  precaution: Content[];
+  steps: Content[];
+};
+
+export const getManualById = async (id: number) => {
 
   const supabase = await createClient();
 
@@ -43,5 +43,54 @@ export const getManualById = async (id: number): Promise<FormData> => {
     throw new Error("Manual取得失敗");
   }
 
-  return data;
+  const getImageUrls = async (path?: string) => {
+    if (!path) return null;
+
+    const { data } = await supabase.storage
+      .from("manualImage")
+      .createSignedUrl(path, 60);
+
+    return data?.signedUrl ?? null;
+  };
+
+  const content: Contents = data.content;
+
+  const newContent = {
+    ...content,
+
+    term: await Promise.all(
+      (content.term ?? []).map(async (item) => ({
+        ...item,
+        image_url: await getImageUrls(item.image_path),
+      }))
+    ),
+
+    materials: await Promise.all(
+      (content.materials ?? []).map(async (item) => ({
+        ...item,
+        image_url: await getImageUrls(item.image_path),
+      }))
+    ),
+
+    precaution: await Promise.all(
+      (content.precaution ?? []).map(async (item) => ({
+        ...item,
+        image_url: await getImageUrls(item.image_path),
+      }))
+    ),
+
+    steps: await Promise.all(
+      (content.steps ?? []).map(async (item) => ({
+        ...item,
+        image_url: await getImageUrls(item.image_path),
+      }))
+    ),
+  }
+
+  console.log(data, content)
+
+  return {
+    ...data,
+    content: newContent,
+  };
 };

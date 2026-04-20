@@ -7,7 +7,7 @@ export default function Home() {
      <section className="w-full md:w-3/4">
        <ManualList />
      </section>
-     <aside className="bg-blue-200 w-full md:w-1/4 flex items-center flex-col">
+     <aside className="bg-blue-100 w-full md:w-1/4 flex items-center flex-col">
        <Link href="/manual/new">新規作成</Link>
        <Link href="/manual/new">編集</Link>
      </aside>

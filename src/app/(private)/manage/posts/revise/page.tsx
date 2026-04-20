@@ -1,6 +1,5 @@
 import ManualForm from "@/components/ManualForm";
 
-export default function CreateManualForm () {
-  
+export default function ReviseManualForm () {
   return <ManualForm />
 }

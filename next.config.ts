@@ -7,8 +7,19 @@ const nextConfig: NextConfig = {
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   // Optionally, add any other Next.js config below
   images: {
-    domains: ["picsum.photos"]
-  }
+    domains: ["picsum.photos"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "tgkxzfdkupmwurefkndd.supabase.co",
+      },
+    ],
+  },
+   experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb', // 例
+    },
+  },
 };
 
 const withMDX = createMDX({
