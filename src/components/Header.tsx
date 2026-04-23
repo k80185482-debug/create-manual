@@ -16,6 +16,9 @@ const Header = () => {
         <nav className='text-sm font-medium'>
           <Link href="/manage/posts/create" className='bg-orange-200 px-3 py-3 rounded-md'>新規手順書作成</Link>
         </nav>
+        <nav className='text-sm font-medium'>
+          <Link href="/manage/posts/revise" className='bg-yellow-200 px-3 py-3 rounded-md'>手順書の編集</Link>
+        </nav>
       </div>
       <div>
         <nav className='text-sm font-medium'>
