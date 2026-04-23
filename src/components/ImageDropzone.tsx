@@ -7,9 +7,10 @@ import { X } from "lucide-react";
 type Props = {
   value?: File[];
   onChange: (files: File[]) => void;
+  defaultImageUrl?: string
 };
 
-export function ImageDropzone({ value, onChange }: Props) {
+export function ImageDropzone({ value, onChange, defaultImageUrl }: Props) {
   const onDrop = (imageFiles: File[]) => {
     if (imageFiles.length === 0) return;
     onChange(imageFiles);
@@ -39,6 +40,10 @@ export function ImageDropzone({ value, onChange }: Props) {
           <p>クリック or ドラッグで画像アップロード</p>
         )}
       </Card>
+
+      {!value?.length && defaultImageUrl && (
+        <img src={defaultImageUrl} alt="" className="h-32 rounded object-cover"/>
+      )}
 
       {file && (
         <div className="relative w-fit">

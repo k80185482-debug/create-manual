@@ -1,40 +1,49 @@
 "use client";
 
 import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { createManual } from "@/app/actions/createManual";
 import { Textarea } from "@/components/ui/textarea";
 import { rewriteText } from "@/app/actions/rewriteText";
 import { useEffect, useState } from "react";
 import { getProject } from "@/app/actions/getProject";
 import { ImageDropzone } from "@/components/ImageDropzone";
+import { upadateManual } from "@/app/actions/updateManual";
 
 type FormData = {
+  id: number;
   Project: string;
   title: string;
   content: {
     purpose: string;
     applicableRange: string;
+
     term: {
       title: string;
       body: string;
-      image?: File[];
+      image?: File[]
       image_path?: string;
+      image_url?: string;
     }[];
+
     materials: {
       body: string;
       image?: File[];
       image_path?: string;
+      image_url?: string;
     }[];
+
     precaution: {
       body: string;
       image?: File[];
       image_path?: string;
+      image_url?: string;
     }[];
+
     steps: {
       title: string;
       body: string;
       image?: File[];
       image_path?: string;
+      image_url?: string;
     }[];
   };
   published: boolean;
@@ -54,7 +63,7 @@ type ProjectProps = {
 
 
 
-export default function ManualForm({defaultValues}: Props) {
+export default function UpdateManualForm({defaultValues}: Props) {
   const { register, control, handleSubmit, getValues, setValue } = useForm<FormData>({defaultValues});
   const {
     fields: stepFields,
@@ -102,7 +111,7 @@ export default function ManualForm({defaultValues}: Props) {
 
 
   const onSubmit = async (data: FormData) => {
-    await createManual(data);
+    await upadateManual(data);
   };
 
   const onClickRewriteText = async (index: number, id: string) => {
@@ -145,6 +154,7 @@ export default function ManualForm({defaultValues}: Props) {
                 <ImageDropzone
                   value={field.value}
                   onChange={field.onChange}
+                  defaultImageUrl={termFields[index].image_url}
                 />
               )}
             />
@@ -167,6 +177,7 @@ export default function ManualForm({defaultValues}: Props) {
                 <ImageDropzone
                   value={field.value}
                   onChange={field.onChange}
+                  defaultImageUrl={materialFields[index].image_url}
                 />
               )}
             />
@@ -189,6 +200,7 @@ export default function ManualForm({defaultValues}: Props) {
                 <ImageDropzone
                   value={field.value}
                   onChange={field.onChange}
+                  defaultImageUrl={precautionFields[index].image_url}
                 />
               )}
             />
@@ -228,6 +240,7 @@ export default function ManualForm({defaultValues}: Props) {
                   <ImageDropzone
                     value={field.value}
                     onChange={field.onChange}
+                    defaultImageUrl={stepFields[index].image_url}
                   />
                 )}
               />
