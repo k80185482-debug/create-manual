@@ -7,6 +7,7 @@ import { rewriteText } from "@/app/actions/rewriteText";
 import { useEffect, useState } from "react";
 import { getProject } from "@/app/actions/getProject";
 import { ImageDropzone } from "@/components/ImageDropzone";
+import { listText } from "@/app/actions/ListText";
 
 type FormData = {
   Project: string;
@@ -115,6 +116,16 @@ export default function ManualForm({defaultValues}: Props) {
     }))
   }
 
+  const onClickListText = async (index: number, id: string) => {
+    const text = getValues()
+    const ManualText = text.content.steps[index].body
+    const result = await listText(ManualText)
+    setText(prev => ({
+      ...prev,
+      [id]: result ?? ""
+    }))
+  }
+
   const onClickMoveText = (index: number, id: string) => {
     const value = text[id]
     setValue(`content.steps.${index}.body`, value, {shouldDirty: true, shouldTouch: true, shouldValidate: true})
@@ -212,6 +223,9 @@ export default function ManualForm({defaultValues}: Props) {
               <div className="flex flex-col ">
                 <button type="button" onClick={() => onClickRewriteText(index, id)}>
                   文章修正
+                </button>
+                <button type="button" onClick={() => onClickListText(index, id)}>
+                  箇条書き
                 </button>
                 <button type="button" onClick={() => onClickMoveText(index, id)}>
                   文章移動

@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   // Optionally, add any other Next.js config below
   images: {
-    domains: ["picsum.photos"],
+    domains: ["picsum.photos", "placehold.jp"],
     remotePatterns: [
       {
         protocol: "https",
