@@ -1,19 +1,23 @@
 "use client"
 
 import { createProject } from "@/app/actions/createProject";
+import { ImageDropzone } from "@/components/ImageDropzone";
 import { useState } from "react";
 
 export default function CreateProjectPage() {
 
   const [name, setName] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    await createProject(name);
+    await createProject(name, files);
 
     alert("プロジェクト作成しました");
   };
+
+  console.log(files)
 
   return (
     <div className="max-w-xl mx-auto space-y-4">
@@ -29,6 +33,11 @@ export default function CreateProjectPage() {
           placeholder="案件名"
           value={name}
           onChange={(e)=>setName(e.target.value)}
+        />
+
+        <ImageDropzone
+          value={files}
+          onChange={(newFiles)=>setFiles(newFiles)}
         />
 
         <button
