@@ -3,26 +3,28 @@ import React from 'react'
 
 const Header = () => {
   return (
-    <header className='bg-blue-100 py-5 px-10 border-b flex justify-between items-center'>
+    <header className='py-5 px-10 border-b flex justify-between items-center bg-slate-200'>
       <div>
         <h1 className='text-2xl font-extrabold'>
           <Link href="/">手順書作成</Link>
         </h1>
       </div>
-      <div className='flex space-x-10'>
-        <nav className='text-sm font-medium'>
-          <Link href="/manage/posts/newProject" className='bg-gray-300 px-3 py-3 rounded-md'>新規案件作成</Link>
-        </nav>
-        <nav className='text-sm font-medium'>
-          <Link href="/manage/posts/create" className='bg-orange-200 px-3 py-3 rounded-md'>新規手順書作成</Link>
-        </nav>
-        <nav className='text-sm font-medium'>
-          <Link href="/manage/posts/revise" className='bg-yellow-200 px-3 py-3 rounded-md'>手順書の編集</Link>
-        </nav>
+      <div className="hidden md:flex space-x-10">
+        <div className='flex space-x-10'>
+          <nav className='text-sm font-medium'>
+            <Link href="/manage/posts/newProject" className='bg-blue-100 px-3 py-3 rounded-md'>新規案件作成</Link>
+          </nav>
+          <nav className='text-sm font-medium'>
+            <Link href="/manage/posts/create" className='bg-orange-100 px-3 py-3 rounded-md'>新規手順書作成</Link>
+          </nav>
+          <nav className='text-sm font-medium'>
+            <Link href="/manage/posts/revise" className='bg-yellow-100 px-3 py-3 rounded-md'>手順書の編集</Link>
+          </nav>
+        </div>
       </div>
       <div>
         <nav className='text-sm font-medium'>
-          <Link href="/auth/signup" className='bg-orange-300 px-3 py-3 rounded-md'>サインアップ</Link>
+          <Link href="/auth/sign-up" className='bg-orange-200 px-3 py-3 rounded-md'>サインアップ</Link>
         </nav>
       </div>
     </header>

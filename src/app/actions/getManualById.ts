@@ -33,7 +33,7 @@ export const getManualById = async (id: number) => {
   }
 
   const { data, error } = await supabase
-    .from("Manual")
+    .from("manuals")
     .select("*")
     .eq("id", id)
     .single()

@@ -2,6 +2,7 @@
 
 import { createProject } from "@/app/actions/createProject";
 import { ImageDropzone } from "@/components/ImageDropzone";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 export default function CreateProjectPage() {
@@ -22,7 +23,7 @@ export default function CreateProjectPage() {
   return (
     <div className="max-w-xl mx-auto space-y-4">
 
-      <h1 className="text-2xl font-bold">
+      <h1 className="text-2xl font-bold m-5">
         新しい案件を作成
       </h1>
 
@@ -40,12 +41,12 @@ export default function CreateProjectPage() {
           onChange={(newFiles)=>setFiles(newFiles)}
         />
 
-        <button
+        <Button
           type="submit"
           className="border px-4 py-2"
         >
           作成
-        </button>
+        </Button>
 
       </form>
 

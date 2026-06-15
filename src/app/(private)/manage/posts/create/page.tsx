@@ -1,7 +1,7 @@
 import ManualForm from "@/components/ManualForm";
 
 type FormData = {
-  Project: string;
+  projects: string;
   title: string;
   content: {
     purpose: string;
@@ -35,7 +35,7 @@ type FormData = {
 export default function CreateManualForm () {
 
   const defaultValues: FormData = {
-    Project: "",
+    projects: "",
     title: "",
     content: {
       purpose: "",
