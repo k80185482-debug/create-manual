@@ -22,6 +22,9 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
   const [repeatPassword, setRepeatPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [groupName, setGroupName] = useState('')
+  const [inviteCode, setInviteCode] = useState('')
+  const [isCreateGroup, setIsCreateGroup] = useState(true)
   const router = useRouter()
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -37,7 +40,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -45,12 +48,60 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
         },
       })
       if (error) throw error
+
+      console.log(data.session)
+      console.log(data.user)
+
+      if (!data.user) {
+        throw new Error('User creation failed')
+      }
+
+      const {error: profileError} = await supabase
+        .from('profiles')
+        .upsert({
+          id: data.user.id,
+          email,
+        })
+      console.log('profileError', profileError)
+      if (profileError) throw profileError
+
+      let groupId: number
+
+      if (isCreateGroup) {
+        const { data: group, error: groupError } = await supabase
+          .from('groups')
+          .insert({
+            name: groupName
+          })
+          .select()
+          .single()
+        console.log('groupError', groupError)
+        if (groupError) throw groupError
+        groupId = group.id
+      } else {
+        const { data: group } = await supabase
+          .from('groups')
+          .select()
+          .eq('inviteCode', inviteCode)
+          .single()
+        groupId = group.id
+      }
+
+      const { error: memberError } = await supabase
+        .from('group_members')
+        .insert({
+          groupId,
+          userId: data.user.id,
+        })
+      console.log('memberError', memberError)
+      if (memberError) throw memberError
       router.push('/auth/sign-up-success')
     } catch (error: unknown) {
+      console.log(error)
       setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
       setIsLoading(false)
-    }
+    } 
   }
 
   return (
@@ -74,9 +125,45 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
+              <Button
+                type="button"
+                onClick={() => setIsCreateGroup(true)}
+              >
+                グループ作成
+              </Button>
+
+              <Button
+                type="button"
+                onClick={() => setIsCreateGroup(false)}
+              >
+                招待コードで参加
+              </Button>
+              {isCreateGroup ? (
+                <div className="grid gap-2">
+                  <Label htmlFor="group-name">グループ名</Label>
+                  <Input
+                    id="group-name"
+                    type="text"
+                    required
+                    value={groupName}
+                    onChange={(e) => setGroupName(e.target.value)}
+                  />
+                </div>
+              ) : (
+                <div className="grid gap-2">
+                  <Label htmlFor="group-name">招待コード</Label>
+                  <Input
+                    id="invite-code"
+                    type="text"
+                    required
+                    value={inviteCode}
+                    onChange={(e) => setInviteCode(e.target.value)}
+                  />
+                </div>
+              )}
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">パスワード</Label>
                 </div>
                 <Input
                   id="password"
@@ -88,7 +175,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="repeat-password">Repeat Password</Label>
+                  <Label htmlFor="repeat-password">パスワード再入力</Label>
                 </div>
                 <Input
                   id="repeat-password"

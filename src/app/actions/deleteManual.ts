@@ -11,7 +11,7 @@ export const deleteManual = async (id: number) => {
   }
 
   const { error } = await supabase
-    .from("Manual")
+    .from("manuals")
     .delete()
     .eq("id", id)
 

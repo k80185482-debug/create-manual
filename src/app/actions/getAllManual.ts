@@ -13,14 +13,14 @@ export const getAllManual = async () => {
   }
 
   const { data, error } = await supabase
-    .from("Manual")
+    .from("manuals")
     .select(`
       id,
       title,
       published,
       createdAt,
       content,
-      author:Profile (
+      author:profiles (
         email
       )
     `)

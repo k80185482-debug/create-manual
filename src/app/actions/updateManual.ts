@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 
 type FormData = {
   id: number;
-  Project: string;
+  projects: string;
   title: string;
   content: {
     purpose: string;
@@ -100,9 +100,9 @@ export const upadateManual = async (Manualdata: FormData) => {
   };
 
   const { error: updateError } = await supabase
-    .from("Manual")
+    .from("manuals")
     .update({
-      projectId: Manualdata.Project,
+      projectId: Manualdata.projects,
       title: Manualdata.title,
       content: newContent,
       published: Manualdata.published,

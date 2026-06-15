@@ -20,13 +20,16 @@ export const getProject = async (): Promise<ProjectProps[]> => {
   }
 
   const { data, error } = await supabase
-    .from("Project")
+    .from("projects")
     .select("*");
 
   if (error) {
     console.log(error);
-    throw new Error("プロジェクト取得失敗");
+    throw error;
   }
+
+  
+    console.log(user)
 
   const projectsWithUrl = await Promise.all(
     data.map(async (project) => {

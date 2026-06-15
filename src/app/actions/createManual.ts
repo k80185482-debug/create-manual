@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 
 type FormData = {
-  Project: string;
+  projects: string;
   title: string;
   content: {
     purpose: string;
@@ -47,9 +47,9 @@ export const createManual = async (Manualdata: FormData) => {
     throw new Error("ログインしてません")
   }
 
-  const { data: manual,  error } = await supabase.from ("Manual").insert(
+  const { data: manual,  error } = await supabase.from ("manuals").insert(
     {
-      projectId: Manualdata.Project,
+      projectId: Manualdata.projects,
       title: Manualdata.title,
       content: {},
       published: Manualdata.published,
@@ -64,9 +64,16 @@ export const createManual = async (Manualdata: FormData) => {
     throw error;
   }
 
+    const { data: memberships } = await supabase
+    .from("group_members")
+    .select("groupId")
+    .eq("userId", user.id);
+
+    const groupId = memberships?.[0]?.groupId;
+
   const uploadImage  = async ( file?: File[] ) => {
     if ( !file || file.length === 0 ) return null;
-    const imagePath = `${user.id}/${manual.id}/${crypto.randomUUID()}`
+    const imagePath = `${groupId}/${manual.id}/${crypto.randomUUID()}`
     const { error: storageError } = await supabase.storage
     .from("manualImage")
     .upload(imagePath, file[0])
@@ -116,7 +123,7 @@ export const createManual = async (Manualdata: FormData) => {
   };
 
   const { error: updateError } = await supabase
-    .from("Manual")
+    .from("manuals")
     .update({ content: newContent })
     .eq("id", manual.id);
 

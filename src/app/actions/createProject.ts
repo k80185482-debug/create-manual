@@ -11,7 +11,14 @@ export const createProject = async (name: string, files: File[]) => {
     throw new Error("ログインしてません");
   }
 
-  const imagePath = `${user.id}/${crypto.randomUUID()}`
+  const { data: memberships } = await supabase
+    .from("group_members")
+    .select("groupId")
+    .eq("userId", user.id);
+
+  const groupId = memberships?.[0]?.groupId;
+
+  const imagePath = `${groupId}/${crypto.randomUUID()}`
   const { error: storageError } = await supabase.storage
     .from("ProjectImage")
     .upload(imagePath, files[0])
@@ -22,12 +29,13 @@ export const createProject = async (name: string, files: File[]) => {
   }
 
   const { error } = await supabase
-    .from("Project")
+    .from("projects")
     .insert([
       {
         name: name,
         authorId: user.id,
-        imageUrl: imagePath
+        imageUrl: imagePath,
+        groupId: groupId
       }
     ])
 
